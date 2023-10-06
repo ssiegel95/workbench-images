@@ -35,7 +35,7 @@ read -n 1 -s
 clear
 echo "Release name"
 echo "------------"
-tw_echo "Which name do you want to give to this release, for example: '2026a' (for default, '2023c', press enter): " 0
+echo "Which name do you want to give to this release, for example: '2026a' (for default, '2023c', press enter): " 0
 read -p "" RELEASE
 RELEASE=${RELEASE:-"2023c"}
 
@@ -43,7 +43,7 @@ RELEASE=${RELEASE:-"2023c"}
 clear
 echo "Release date"
 echo "------------"
-tw_echo "Which date do you want to use for this release in YYYYMMDD format (for default '$(date +%Y%m%d)', press enter): " 0
+echo "Which date do you want to use for this release in YYYYMMDD format (for default '$(date +%Y%m%d)', press enter): " 0
 read -p "" DATE
 DATE=${DATE:-$(date +%Y%m%d)}
 
@@ -51,10 +51,10 @@ DATE=${DATE:-$(date +%Y%m%d)}
 clear
 echo "Which Base Image do you want to use?"
 echo "------------------------------------"
-tw_echo "1) Standard image (default, press enter)" 1
-tw_echo "2) CUDA image - version 11.8" 1
-tw_echo "3) CUDA development image - version 11.8" 1
-tw_echo "4) Other" 1
+echo "1) Standard image (default, press enter)" 1
+echo "2) CUDA image - version 11.8" 1
+echo "3) CUDA development image - version 11.8" 1
+echo "4) Other" 1
 
 BASE_CHOICE=$(select_value 4)
 
@@ -62,8 +62,8 @@ BASE_CHOICE=$(select_value 4)
 clear
 echo "Which Python Version do you want to use?"
 echo "----------------------------------------"
-tw_echo "1) 3.11 (default, press enter)" 1
-tw_echo "2) 3.9" 1
+echo "1) 3.11 (default, press enter)" 1
+echo "2) 3.9" 1
 
 PYTHON_CHOICE=$(select_value 2)
 
@@ -88,7 +88,7 @@ case $BASE_CHOICE in
     BASE_IMAGE="workbench-images:cuda-c9s-${PYTHON_VERSION}-devel-cudnn_${RELEASE}_${DATE}"
     ;;
   4)
-    tw_echo "Enter the full path/name of your base image (e.g. quay.io/my_repo/my_image:mytag): " 0
+    echo "Enter the full path/name of your base image (e.g. quay.io/my_repo/my_image:mytag): " 0
     read -p "" BASE_IMAGE
     ;;
 esac
@@ -97,41 +97,41 @@ esac
 clear
 podman images --format "{{.Repository}}:{{.Tag}}" | grep $BASE_IMAGE > /dev/null 2>&1
 if [[ $? -eq 0 ]]; then
-  tw_echo "The base image that will be used is:" 1
-  tw_echo "  $BASE_IMAGE" 1
-  tw_echo "It is present on your system, all is good!" 1
+  echo "The base image that will be used is:" 1
+  echo "  $BASE_IMAGE" 1
+  echo "It is present on your system, all is good!" 1
 else
-  tw_echo "The base image you want to use is:" 1
-  tw_echo "  $BASE_IMAGE" 1
+  echo "The base image you want to use is:" 1
+  echo "  $BASE_IMAGE" 1
   echo
   if [[ ! $BASE_CHOICE == 4 ]]; then
     skopeo inspect docker://quay.io/opendatahub-contrib/${BASE_IMAGE} > /dev/null 2>&1
     if [[ $? -eq 0 ]]; then
-      tw_echo "I have found this image on quay.io/opendatahub-contrib, all is good!" 1
+      echo "I have found this image on quay.io/opendatahub-contrib, all is good!" 1
     else
       skopeo inspect docker://quay.io/opendatahub-contrib/${BASE_IMAGE::-8}latest > /dev/null 2>&1
       if [[ $? -eq 0 ]]; then
-        tw_echo "This image could not be found on your system, so I will use the equivalent latest build from quay.io/opendatahub-contrib instead." 1
+        echo "This image could not be found on your system, so I will use the equivalent latest build from quay.io/opendatahub-contrib instead." 1
         echo
-        tw_echo "The base image will be:" 1
-        tw_echo "  quay.io/opendatahub-contrib/${BASE_IMAGE::-8}latest" 1
+        echo "The base image will be:" 1
+        echo "  quay.io/opendatahub-contrib/${BASE_IMAGE::-8}latest" 1
         BASE_IMAGE="quay.io/opendatahub-contrib/${BASE_IMAGE::-8}latest"
       else
-        tw_echo "Sorry, I could not find this image either locally or its latest version on quay.io/opendatahub-contrib, exiting..." 1
+        echo "Sorry, I could not find this image either locally or its latest version on quay.io/opendatahub-contrib, exiting..." 1
         exit 1
       fi
     fi 
   else
     skopeo inspect docker://$BASE_IMAGE > /dev/null 2>&1
     if [[ $? -eq 0 ]]; then
-      tw_echo "This image is not present on your system but I found it in the repo you indicated, so all is good!" 1
+      echo "This image is not present on your system but I found it in the repo you indicated, so all is good!" 1
     else
-      tw_echo "Sorry, I could not find the image you indicated, exiting..." 1
+      echo "Sorry, I could not find the image you indicated, exiting..." 1
       exit 1
     fi
   fi
 fi
-tw_echo "Press any key to continue (CTRL+C to end the wizard)..." 0
+echo "Press any key to continue (CTRL+C to end the wizard)..." 0
 read -n 1 -s
 
 # Prompt for App Bundle
@@ -159,9 +159,9 @@ fi
 
 # Build the image
 clear
-tw_echo "Let's create you image recipe!" 1
+echo "Let's create you image recipe!" 1
 echo
-tw_echo "In which folder do you want to store this recipe (for default, 'custom-recipes', press enter)?" 1
+echo "In which folder do you want to store this recipe (for default, 'custom-recipes', press enter)?" 1
 read -p "" EXPORT_FOLDER
 EXPORT_FOLDER=${EXPORT_FOLDER:-"custom-recipes"}
 
@@ -233,8 +233,8 @@ fi
 
 echo "$CONTAINERFILE_CONTENT" > $EXPORT_FOLDER/$FOLDER_NAME/Containerfile
 
-tw_echo "Your recipe has been saved to $EXPORT_FOLDER/$FOLDER_NAME." 1
+echo "Your recipe has been saved to $EXPORT_FOLDER/$FOLDER_NAME." 1
 echo
-tw_echo "You can build this image with:" 1
-tw_echo "cd $EXPORT_FOLDER/$FOLDER_NAME" 1
-tw_echo "podman build -t workbench-images:${CUDA}${IMAGE_IDE_NAME}-${APP_BUNDLE_NAME}-${OS_VERSION}-${PYTHON_VERSION}_${RELEASE}_${DATE} ." 1
+echo "You can build this image with:" 1
+echo "cd $EXPORT_FOLDER/$FOLDER_NAME" 1
+echo "podman build -t workbench-images:${CUDA}${IMAGE_IDE_NAME}-${APP_BUNDLE_NAME}-${OS_VERSION}-${PYTHON_VERSION}_${RELEASE}_${DATE} ." 1
