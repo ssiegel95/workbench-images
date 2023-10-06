@@ -22,13 +22,13 @@ echo "###############################"
 echo "# The Custom Images Mageforge #"
 echo "###############################"
 echo
-tw_echo "Welcome, brave Container voyager, to the depths of the Custom Images Mageforge, where we conjure containers of power and wisdom! 🔮🐉" 1
-tw_echo "You have embarked on a perilous journey through the arcane corridors of containerization." 1
+echo "Welcome, brave Container voyager, to the depths of the Custom Images Mageforge, where we conjure containers of power and wisdom! 🔮🐉" 1
+echo "You have embarked on a perilous journey through the arcane corridors of containerization." 1
 echo
-tw_echo "To forge your Container image, you must answer the questions I present to you with wisdom and cunning." 1
-tw_echo "Choose your path wisely, and we shall emerge victorious together! 🌀🗝️" 1
+echo "To forge your Container image, you must answer the questions I present to you with wisdom and cunning." 1
+echo "Choose your path wisely, and we shall emerge victorious together! 🌀🗝️" 1
 echo
-tw_echo "Press any key to start this treacherous quest... 🌟" 1
+echo "Press any key to start this treacherous quest... 🌟" 1
 read -n 1 -s
 
 # Promt for release
